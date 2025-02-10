@@ -1,36 +1,233 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Instalar el servidor de mysql workbench
 
-## Getting Started
+Hay que instalar primero el mysql 
+```
+sudo apt install mysql 
+```
+### Para configurar el servidor de mysql
+```sql
+sudo mysql -u root -p
 
-First, run the development server:
+# Ejecutar estas querys en el CLI de mysql
+CREATE USER '(usuario a crear)'@'localhost' IDENTIFIED BY '0xcwaqsAP1234!';
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Da los permisos necesarios al usuario creado
+GRANT ALL PRIVILEGES ON *.* TO '(usuario creado)'@'localhost' WITH GRANT OPTION;
+
+# Muestra las bases de datos
+SHOW DATABASES;
+
+# Si no está en la lista, hay que crearla.
+CREATE DATABASE prueba;
+```
+Hay que revisar si se creó correctamente la base de datos, luego de eso, se ponen los datos en el tableplus o mysql Workbench y comprobar que funcione correctamente.
+Luego de eso, ya se puede continuar con la ejecución del proyecto normalmente.
+
+### Base de datos en mysql workbench o tableplus, para comprobar que funcione correctamente.
+
+```
+CREATE DATABASE guitar_coach;
+
+USE guitar_coach;
+
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100),
+  correo VARCHAR(100) UNIQUE
+);
+
+CREATE TABLE tutoriales (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titulo VARCHAR(255),
+  descripcion TEXT,
+  id_usuario INT,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+);
+
+CREATE TABLE comentarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  comentario TEXT,
+  id_tutorial INT,
+  FOREIGN KEY (id_tutorial) REFERENCES tutoriales(id)
+);
+
+CREATE TABLE likes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_usuario INT,
+  id_tutorial INT,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+  FOREIGN KEY (id_tutorial) REFERENCES tutoriales(id)
+);
+
+CREATE TABLE cursos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255),
+  descripcion TEXT
+);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Instalar dependencias y correr el proyecto en modo desarrollo
+```
+npm install
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+npm run dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
 
-## Learn More
+Luego de esto, comprobar los endpoints que necesitan peticiones a la base de datos y comprobar que funcione correctamente
+## Peticiones para el SEED en postman
 
-To learn more about Next.js, take a look at the following resources:
+Aquí se encuentra el json de las peticiones de postman para importarlo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+{
+	"info": {
+		"_postman_id": "adf25258-536c-4f67-a81d-e2c895a7a350",
+		"name": "GuitarCoach",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28294845"
+	},
+	"item": [
+		{
+			"name": "Seed Usuarios",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/seed-usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"seed-usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "prueba-conexion",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/test-db",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"test-db"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Seed tutoriales",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/seed-tutoriales",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"seed-tutoriales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Tutorial",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/tutoriales/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"tutoriales",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read Tutoriales",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/tutoriales/tutoriales",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"tutoriales",
+						"tutoriales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Tutoriales",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/tutoriales/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"tutoriales",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Tutoriales",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/tutoriales/delete",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"tutoriales",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
+```
